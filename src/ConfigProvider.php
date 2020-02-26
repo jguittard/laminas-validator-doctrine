@@ -8,6 +8,8 @@
 
 namespace Laminas\Validator\Doctrine;
 
+use Doctrine\ORM\EntityManagerInterface;
+
 class ConfigProvider
 {
     /**
@@ -32,6 +34,9 @@ class ConfigProvider
                 NoObjectExists::class => Container\NoObjectExistsFactory::class,
                 ObjectExists::class => Container\ObjectExistsFactory::class,
                 UniqueObject::class => Container\UniqueObjectFactory::class,
+            ],
+            'aliases' => [
+                'doctrine.entitymanager.orm_default' => EntityManagerInterface::class,
             ],
         ];
     }

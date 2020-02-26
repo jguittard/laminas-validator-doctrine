@@ -28,17 +28,24 @@ abstract class AbstractValidatorFactory
      */
     protected function getRepository(ContainerInterface $container, ?array $options = null) : ObjectRepository
     {
-        if (empty($options['target_class'])) {
-            throw new InvalidArgumentException(sprintf(
-            'Option \'target_class\' is missing when creating validator %s',
-            self::class
-            ));
+        if (array_key_exists('object_repository', $options) && isset($options['object_repository'])) {
+            if ($options['object_repository'] instanceof ObjectRepository) {
+                return $options['object_repository'];
+            }
+            return $container->get($options['object_repository']);
+        } else {
+            if (empty($options['target_class'])) {
+                throw new InvalidArgumentException(sprintf(
+                                                       'Option \'target_class\' is missing when creating validator %s',
+                                                       self::class
+                                                   ));
+            }
+
+            $objectManager   = $this->getObjectManager($container, $options);
+            $targetClassName = $options['target_class'];
+
+            return $objectManager->getRepository($targetClassName);
         }
-
-        $objectManager   = $this->getObjectManager($container, $options);
-        $targetClassName = $options['target_class'];
-
-        return $objectManager->getRepository($targetClassName);
     }
 
     /**
